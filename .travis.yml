@@ -1,0 +1,27 @@
+language: minimal
+
+dist: bionic
+
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_IMG="registry.gitlab.com/offa/docker-images/openjdk"
+    - DOCKER_TAG="stable"
+
+matrix:
+    include:
+    - env: JDK=8
+    - env: JDK=9
+    - env: JDK=10
+    - env: JDK=11
+    - env: JDK=12
+    - env: JDK=13
+
+
+before_install:
+  - docker pull ${DOCKER_IMG}-${JDK}-maven:${DOCKER_TAG}
+
+script:
+  - docker run -v ${PWD}:/mnt -it ${DOCKER_IMG}-${JDK}-maven:${DOCKER_TAG} /bin/bash -c "cd /mnt; script/ci_build.sh"
