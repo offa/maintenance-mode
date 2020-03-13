@@ -30,7 +30,7 @@ import hudson.util.FormApply;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.interceptor.RequirePOST;
+import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.CheckForNull;
 
@@ -71,7 +71,7 @@ public class MaintenanceModeLink extends ManagementLink
         return active;
     }
 
-    @RequirePOST
+    @POST
     public synchronized HttpResponse doToggleMode(StaplerRequest req)
     {
         checkPermission();
