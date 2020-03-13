@@ -24,7 +24,6 @@
 
 package bv.offa.jenkins.maintenance;
 
-import org.acegisecurity.AccessDeniedException;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.mockito.InOrder;
@@ -32,7 +31,6 @@ import org.mockito.InOrder;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class MaintenanceModeLinkTest
@@ -55,7 +53,6 @@ class MaintenanceModeLinkTest
     void toggleChangesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).checkPermission();
         doNothing().when(link).save();
         doNothing().when(link).setMaintenanceMode(anyBoolean());
 
@@ -70,7 +67,6 @@ class MaintenanceModeLinkTest
     void toggleChangesStateBackWhenCalledTwice() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).checkPermission();
         doNothing().when(link).save();
         doNothing().when(link).setMaintenanceMode(anyBoolean());
 
@@ -86,32 +82,9 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void toggleChecksPermission() throws IOException
-    {
-        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).checkPermission();
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
-
-        final StaplerRequest req = mock(StaplerRequest.class);
-        link.doToggleMode(req);
-        verify(link).checkPermission();
-    }
-
-    @Test
-    void toggleFailsWithoutPermission()
-    {
-        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doThrow(AccessDeniedException.class).when(link).checkPermission();
-        final StaplerRequest req = mock(StaplerRequest.class);
-        assertThrows(AccessDeniedException.class, () -> link.doToggleMode(req));
-    }
-
-    @Test
     void toggleSavesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).checkPermission();
         doNothing().when(link).save();
         doNothing().when(link).setMaintenanceMode(anyBoolean());
 

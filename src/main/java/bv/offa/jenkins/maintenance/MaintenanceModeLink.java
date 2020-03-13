@@ -84,16 +84,10 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @POST
     public synchronized HttpResponse doToggleMode(StaplerRequest req) throws IOException
     {
-        checkPermission();
         active = !active;
         setMaintenanceMode(active);
         save();
         return FormApply.success(".");
-    }
-
-    protected void checkPermission()
-    {
-        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
     }
 
     @Override
