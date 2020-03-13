@@ -24,14 +24,16 @@ SOFTWARE.
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:st="jelly:stapler">
-    <div>Enabled: ${it.active}</div>
+    <l:layout permission="${app.ADMINISTER}">
+        <div>Enabled: ${it.active}</div>
 
-    <form method="post" action="toggleMode" name="toggle-mode">
-        <j:if test="${!it.active}">
-            <f:submit value="Enable"/>
-        </j:if>
-        <j:if test="${it.active}">
-            <f:submit value="Disable"/>
-        </j:if>
-    </form>
+        <form method="post" action="toggleMode" name="toggle-mode">
+            <j:if test="${!it.active}">
+                <f:submit value="Enable"/>
+            </j:if>
+            <j:if test="${it.active}">
+                <f:submit value="Disable"/>
+            </j:if>
+        </form>
+    </l:layout>
 </j:jelly>

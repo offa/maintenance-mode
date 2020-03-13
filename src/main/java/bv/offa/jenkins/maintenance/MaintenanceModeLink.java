@@ -27,6 +27,7 @@ package bv.offa.jenkins.maintenance;
 import hudson.Extension;
 import hudson.model.ManagementLink;
 import hudson.util.FormApply;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.interceptor.RequirePOST;
@@ -73,7 +74,13 @@ public class MaintenanceModeLink extends ManagementLink
     @RequirePOST
     public synchronized HttpResponse doToggleMode(StaplerRequest req)
     {
+        checkPermission();
         active = !active;
         return FormApply.success(".");
+    }
+
+    protected void checkPermission()
+    {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
     }
 }

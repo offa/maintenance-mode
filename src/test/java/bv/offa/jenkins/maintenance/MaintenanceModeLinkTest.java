@@ -24,11 +24,13 @@
 
 package bv.offa.jenkins.maintenance;
 
+import org.acegisecurity.AccessDeniedException;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.stapler.StaplerRequest;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class MaintenanceModeLinkTest
 {
@@ -49,11 +51,33 @@ class MaintenanceModeLinkTest
     @Test
     void toggleChangesState()
     {
-        final MaintenanceModeLink link = new MaintenanceModeLink();
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).checkPermission();
+
         final StaplerRequest req = mock(StaplerRequest.class);
         assertThat(link.isActive()).isFalse();
         link.doToggleMode(req);
         assertThat(link.isActive()).isTrue();
+    }
+
+    @Test
+    void toggleChecksPermission()
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).checkPermission();
+
+        final StaplerRequest req = mock(StaplerRequest.class);
+        link.doToggleMode(req);
+        verify(link).checkPermission();
+    }
+
+    @Test
+    void toggleFailsWithoutPermission()
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doThrow(AccessDeniedException.class).when(link).checkPermission();
+        final StaplerRequest req = mock(StaplerRequest.class);
+        assertThrows(AccessDeniedException.class, () -> link.doToggleMode(req));
     }
 
 }
