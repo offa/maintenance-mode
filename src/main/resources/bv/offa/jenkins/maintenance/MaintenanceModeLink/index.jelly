@@ -24,7 +24,6 @@ SOFTWARE.
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:st="jelly:stapler">
-    <l:layout permission="${app.ADMINISTER}">
         <div>Enabled: ${it.active}</div>
 
         <form method="post" action="toggleMode" name="toggle-mode">
@@ -35,5 +34,4 @@ SOFTWARE.
                 <f:submit value="Disable"/>
             </j:if>
         </form>
-    </l:layout>
 </j:jelly>
