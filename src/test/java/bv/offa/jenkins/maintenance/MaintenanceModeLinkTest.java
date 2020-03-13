@@ -27,6 +27,9 @@ package bv.offa.jenkins.maintenance;
 import org.acegisecurity.AccessDeniedException;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.stapler.StaplerRequest;
+import org.mockito.InOrder;
+
+import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,22 +52,46 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void toggleChangesState()
+    void toggleChangesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).checkPermission();
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
 
         final StaplerRequest req = mock(StaplerRequest.class);
         assertThat(link.isActive()).isFalse();
         link.doToggleMode(req);
         assertThat(link.isActive()).isTrue();
+        verify(link).setMaintenanceMode(true);
     }
 
     @Test
-    void toggleChecksPermission()
+    void toggleChangesStateBackWhenCalledTwice() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).checkPermission();
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
+
+        InOrder inOrder = inOrder(link);
+        final StaplerRequest req = mock(StaplerRequest.class);
+        assertThat(link.isActive()).isFalse();
+        link.doToggleMode(req);
+        assertThat(link.isActive()).isTrue();
+        inOrder.verify(link).setMaintenanceMode(true);
+        link.doToggleMode(req);
+        assertThat(link.isActive()).isFalse();
+        inOrder.verify(link).setMaintenanceMode(false);
+    }
+
+    @Test
+    void toggleChecksPermission() throws IOException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).checkPermission();
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
 
         final StaplerRequest req = mock(StaplerRequest.class);
         link.doToggleMode(req);
@@ -78,6 +105,29 @@ class MaintenanceModeLinkTest
         doThrow(AccessDeniedException.class).when(link).checkPermission();
         final StaplerRequest req = mock(StaplerRequest.class);
         assertThrows(AccessDeniedException.class, () -> link.doToggleMode(req));
+    }
+
+    @Test
+    void toggleSavesState() throws IOException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).checkPermission();
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
+
+        final StaplerRequest req = mock(StaplerRequest.class);
+        link.doToggleMode(req);
+        verify(link).save();
+    }
+
+    @Test
+    void loadStateRestoresState() throws IOException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).load();
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        link.loadState();
+        verify(link).setMaintenanceMode(false);
     }
 
 }

@@ -24,20 +24,30 @@
 
 package bv.offa.jenkins.maintenance;
 
+import hudson.BulkChange;
 import hudson.Extension;
+import hudson.XmlFile;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
 import hudson.model.ManagementLink;
+import hudson.model.Saveable;
 import hudson.util.FormApply;
+import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.CheckForNull;
+import java.io.File;
+import java.io.IOException;
 
 @Extension
-public class MaintenanceModeLink extends ManagementLink
+public class MaintenanceModeLink extends ManagementLink implements Saveable
 {
+    private static final XStream2 XSTREAM = new XStream2();
     private volatile boolean active;
+
 
     @CheckForNull
     @Override
@@ -72,10 +82,12 @@ public class MaintenanceModeLink extends ManagementLink
     }
 
     @POST
-    public synchronized HttpResponse doToggleMode(StaplerRequest req)
+    public synchronized HttpResponse doToggleMode(StaplerRequest req) throws IOException
     {
         checkPermission();
         active = !active;
+        setMaintenanceMode(active);
+        save();
         return FormApply.success(".");
     }
 
@@ -83,4 +95,49 @@ public class MaintenanceModeLink extends ManagementLink
     {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
     }
+
+    @Override
+    public void save() throws IOException
+    {
+        if (BulkChange.contains(this))
+        {
+            return;
+        }
+        getConfigFile().write(this);
+    }
+
+    @Initializer(after = InitMilestone.JOB_LOADED)
+    public void loadState() throws IOException
+    {
+        load();
+        setMaintenanceMode(active);
+    }
+
+    protected void setMaintenanceMode(boolean enabled) throws IOException
+    {
+        if (enabled)
+        {
+            Jenkins.get().doQuietDown();
+        }
+        else
+        {
+            Jenkins.get().doCancelQuietDown();
+        }
+    }
+
+    protected void load() throws IOException
+    {
+        final XmlFile configFile = getConfigFile();
+
+        if (configFile.exists())
+        {
+            configFile.unmarshal(this);
+        }
+    }
+
+    private XmlFile getConfigFile()
+    {
+        return new XmlFile(XSTREAM, new File(Jenkins.get().getRootDir(), "bv.offa.jenkins.maintenancemode.xml"));
+    }
+
 }
