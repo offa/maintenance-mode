@@ -71,7 +71,7 @@ public class MaintenanceModeLink extends ManagementLink
     }
 
     @RequirePOST
-    public HttpResponse doToggleMode(StaplerRequest req)
+    public synchronized HttpResponse doToggleMode(StaplerRequest req)
     {
         active = !active;
         return FormApply.success(".");
