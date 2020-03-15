@@ -63,6 +63,12 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         return "Maintenance Mode";
     }
 
+    @Override
+    public String getDescription()
+    {
+        return "Stops executing new builds beyond restarts.";
+    }
+
     @CheckForNull
     @Override
     public String getUrlName()
