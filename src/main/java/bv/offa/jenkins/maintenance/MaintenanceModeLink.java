@@ -31,7 +31,7 @@ import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import hudson.model.ManagementLink;
 import hudson.model.Saveable;
-import hudson.util.FormApply;
+import hudson.util.HttpResponses;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpResponse;
@@ -87,7 +87,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         active = !active;
         setMaintenanceMode(active);
         save();
-        return FormApply.success(".");
+        return HttpResponses.redirectToContextRoot();
     }
 
     @Override
