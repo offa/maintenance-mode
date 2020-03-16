@@ -18,20 +18,20 @@
     </properties>
 
     <name>Maintenance Mode</name>
+    <description>Jenkins maintenance mode.</description>
+
     <licenses>
         <license>
             <name>MIT License</name>
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
-    <!-- Assuming you want to host on @jenkinsci:
-    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <url>https://github.com/offa/${project.artifactId}</url>
     <scm>
-        <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+        <connection>scm:git:git://github.com/offa/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:offa/${project.artifactId}.git</developerConnection>
+        <url>${project.url}</url>
     </scm>
-    -->
 
     <dependencies>
         <dependency>
