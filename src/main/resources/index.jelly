@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    TODO
+    Jenkins maintenance mode, stops executing new builds beyond restarts.
 </div>
