@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Jenkins maintenance mode, stops executing new builds beyond restarts.
+    Jenkins maintenance mode, stops executing new builds across restarts.
 </div>

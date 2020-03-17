@@ -66,7 +66,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Override
     public String getDescription()
     {
-        return "Stops executing new builds beyond restarts.";
+        return "Stops executing new builds across restarts.";
     }
 
     @CheckForNull
