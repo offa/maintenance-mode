@@ -99,11 +99,10 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Override
     public void save() throws IOException
     {
-        if (BulkChange.contains(this))
+        if (!BulkChange.contains(this))
         {
-            return;
+            getConfigFile().write(this);
         }
-        getConfigFile().write(this);
     }
 
     @Initializer(after = InitMilestone.JOB_LOADED)
