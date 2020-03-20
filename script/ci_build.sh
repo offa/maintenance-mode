@@ -2,5 +2,5 @@
 
 set -ex
 
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --no-transfer-progress
-mvn verify -B --no-transfer-progress
+mvn install -DskipTests=true -Dmaven.javadoc.skip=true -V --no-transfer-progress
+mvn verify --no-transfer-progress
