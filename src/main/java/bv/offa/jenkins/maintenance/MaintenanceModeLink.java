@@ -53,14 +53,14 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Override
     public String getIconFileName()
     {
-        return "gear2.png";
+        return isActive() ? "error.png" : "accept.png";
     }
 
     @CheckForNull
     @Override
     public String getDisplayName()
     {
-        return "Maintenance Mode";
+        return isActive() ? "Disable Maintenance Mode" : "Maintenance Mode";
     }
 
     @Override
