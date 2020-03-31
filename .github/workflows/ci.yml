@@ -15,4 +15,9 @@ jobs:
         uses: actions/setup-java@master
         with:
           java-version: ${{ matrix.java }}
+      - uses: actions/cache@master
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk${{ matrix.java }}-maven-
       - run: script/ci_build.sh
