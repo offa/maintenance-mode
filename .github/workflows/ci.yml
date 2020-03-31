@@ -10,14 +10,17 @@ jobs:
         java: [ 8, 11, 12, 13, 14 ]
     name: jdk-${{ matrix.java }}
     steps:
-      - uses: actions/checkout@master
-      - name: Build with jdk-${{ matrix.java }}
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup jdk-${{ matrix.java }}
         uses: actions/setup-java@master
         with:
           java-version: ${{ matrix.java }}
-      - uses: actions/cache@master
+      - name: Cache
+        uses: actions/cache@master
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk${{ matrix.java }}-maven-
-      - run: script/ci_build.sh
+      - name: Build
+        run: script/ci_build.sh
