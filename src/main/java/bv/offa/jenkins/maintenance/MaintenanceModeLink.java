@@ -24,6 +24,7 @@
 
 package bv.offa.jenkins.maintenance;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.BulkChange;
 import hudson.Extension;
 import hudson.XmlFile;
@@ -80,6 +81,13 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     public boolean getRequiresPOST()
     {
         return true;
+    }
+
+    @NonNull
+    @Override
+    public Category getCategory()
+    {
+        return Category.TOOLS;
     }
 
     public boolean isActive()

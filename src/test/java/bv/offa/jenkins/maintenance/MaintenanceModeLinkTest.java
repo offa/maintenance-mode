@@ -24,6 +24,7 @@
 
 package bv.offa.jenkins.maintenance;
 
+import hudson.model.ManagementLink;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.mockito.InOrder;
@@ -40,6 +41,13 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getRequiresPOST()).isTrue();
+    }
+
+    @Test
+    void supportsCategory()
+    {
+        final MaintenanceModeLink link = new MaintenanceModeLink();
+        assertThat(link.getCategory()).isEqualTo(ManagementLink.Category.TOOLS);
     }
 
     @Test
