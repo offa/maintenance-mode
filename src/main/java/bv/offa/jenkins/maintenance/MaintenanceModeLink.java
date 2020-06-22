@@ -123,7 +123,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         setMaintenanceMode(active);
     }
 
-    protected void setMaintenanceMode(boolean enabled) throws IOException
+    protected void setMaintenanceMode(boolean enabled)
     {
         if (enabled)
         {
