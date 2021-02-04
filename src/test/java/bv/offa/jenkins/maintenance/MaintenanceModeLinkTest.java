@@ -44,6 +44,13 @@ class MaintenanceModeLinkTest
     }
 
     @Test
+    void stableUrlName()
+    {
+        final MaintenanceModeLink link = new MaintenanceModeLink();
+        assertThat(link.getUrlName()).isEqualTo("maintenance-mode");
+    }
+
+    @Test
     void supportsCategory()
     {
         final MaintenanceModeLink link = new MaintenanceModeLink();
