@@ -18,6 +18,6 @@ jobs:
         with:
           languages: java
       - name: CodeQL Build
-        uses: github/codeql-action/autobuild@v1
+        run: mvn verify --batch-mode -Dmaven.javadoc.skip=true -V --no-transfer-progress
       - name: CodeQL Analysis
         uses: github/codeql-action/analyze@v1
