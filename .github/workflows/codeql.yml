@@ -21,6 +21,7 @@ jobs:
         uses: github/codeql-action/init@v1
         with:
           languages: java
+          queries: +security-and-quality
       - name: CodeQL Build
         run: mvn verify --batch-mode -Dmaven.javadoc.skip=true -V --no-transfer-progress
       - name: CodeQL Analysis
