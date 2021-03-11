@@ -62,7 +62,7 @@ class MaintenanceModeLinkTest
     void requiredPermission()
     {
         final MaintenanceModeLink link = new MaintenanceModeLink();
-        assertThat(link.getRequiredPermission()).isEqualTo(Jenkins.MANAGE);
+        assertThat(link.getRequiredPermission()).isEqualTo(Jenkins.ADMINISTER);
     }
 
     @Test

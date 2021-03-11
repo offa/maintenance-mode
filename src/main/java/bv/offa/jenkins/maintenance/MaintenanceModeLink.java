@@ -95,7 +95,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Override
     public Permission getRequiredPermission()
     {
-        return Jenkins.MANAGE;
+        return Jenkins.ADMINISTER;
     }
 
     public boolean isActive()

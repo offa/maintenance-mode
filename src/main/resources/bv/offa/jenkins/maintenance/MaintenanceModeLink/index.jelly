@@ -24,7 +24,7 @@ SOFTWARE.
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:f="/lib/form">
-    <l:layout permission="${app.MANAGE}" type="one-column" title="Maintenance Mode">
+    <l:layout permission="${app.ADMINISTER}" type="one-column" title="Maintenance Mode">
         <l:main-panel>
             <f:section title="Maintenance Mode"/>
             <form method="post" action="toggleMode" name="toggle-mode">
