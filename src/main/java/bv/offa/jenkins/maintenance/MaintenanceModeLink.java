@@ -32,6 +32,7 @@ import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import hudson.model.ManagementLink;
 import hudson.model.Saveable;
+import hudson.security.Permission;
 import hudson.util.HttpResponses;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
@@ -88,6 +89,13 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     public Category getCategory()
     {
         return Category.TOOLS;
+    }
+
+    @NonNull
+    @Override
+    public Permission getRequiredPermission()
+    {
+        return Jenkins.MANAGE;
     }
 
     public boolean isActive()
