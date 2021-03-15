@@ -62,13 +62,13 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Override
     public String getDisplayName()
     {
-        return isActive() ? "Disable Maintenance Mode" : "Maintenance Mode";
+        return isActive() ? Messages.MaintenanceModeLink_displayname_enabled() : Messages.MaintenanceModeLink_displayname_disabled();
     }
 
     @Override
     public String getDescription()
     {
-        return "Stops executing new builds across restarts.";
+        return Messages.MaintenanceModeLink_description();
     }
 
     @CheckForNull
