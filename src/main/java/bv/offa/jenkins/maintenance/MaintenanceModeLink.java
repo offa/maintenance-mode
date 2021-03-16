@@ -110,7 +110,8 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         checkPermission(getRequiredPermission());
         active = !active;
         save();
-        setMaintenanceMode(active).generateResponse(req, resp, null);
+        setMaintenanceMode(active);
+        resp.sendRedirect2(req.getContextPath());
     }
 
     @Override
@@ -122,7 +123,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+
     @Initializer(after = InitMilestone.JOB_LOADED)
     public void loadState() throws IOException
     {
@@ -130,13 +131,17 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         setMaintenanceMode(active);
     }
 
-    protected HttpRedirect setMaintenanceMode(boolean enabled)
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    protected void setMaintenanceMode(boolean enabled)
     {
         if (enabled)
         {
-            return Jenkins.get().doQuietDown();
+            Jenkins.get().doQuietDown();
         }
-        return Jenkins.get().doCancelQuietDown();
+        else
+        {
+            Jenkins.get().doCancelQuietDown();
+        }
     }
 
     protected void checkPermission(Permission permission)

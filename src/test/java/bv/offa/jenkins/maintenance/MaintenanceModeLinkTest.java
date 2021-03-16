@@ -29,7 +29,6 @@ import hudson.security.Permission;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.mockito.InOrder;
@@ -41,20 +40,17 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 @ExtendWith(MockitoExtension.class)
 class MaintenanceModeLinkTest
 {
-    private static final HttpRedirect IGNORE_REDIRECT = new HttpRedirect("ignore");
     @Mock
     private StaplerRequest req;
     @Mock
@@ -100,7 +96,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
         doNothing().when(link).checkPermission(any(Permission.class));
 
         assertThat(link.isActive()).isFalse();
@@ -114,7 +110,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
         doNothing().when(link).checkPermission(any(Permission.class));
 
         InOrder inOrder = inOrder(link);
@@ -132,7 +128,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
         doNothing().when(link).checkPermission(any(Permission.class));
 
         link.doToggleMode(req, resp);
@@ -144,7 +140,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).load();
-        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
         link.loadState();
         verify(link).setMaintenanceMode(false);
     }
@@ -155,11 +151,11 @@ class MaintenanceModeLinkTest
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
         doNothing().when(link).checkPermission(any(Permission.class));
-        final HttpRedirect redirect = new HttpRedirect("new-url-for-redirect");
-        doReturn(redirect).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        when(req.getContextPath()).thenReturn("redirect-url");
 
         link.doToggleMode(req, resp);
-        verify(resp).sendRedirect(anyInt(), eq("new-url-for-redirect"));
+        verify(resp).sendRedirect2("redirect-url");
     }
 
     @Test
@@ -167,7 +163,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean());
         doNothing().when(link).checkPermission(any(Permission.class));
 
         link.doToggleMode(req, resp);
