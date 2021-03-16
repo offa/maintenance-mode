@@ -36,6 +36,8 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -139,6 +141,20 @@ class MaintenanceModeLinkTest
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
         link.loadState();
         verify(link).setMaintenanceMode(false);
+    }
+
+    @Test
+    void toggleRedirects() throws IOException, ServletException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        final HttpRedirect redirect = new HttpRedirect("new-url-for-redirect");
+        doReturn(redirect).when(link).setMaintenanceMode(anyBoolean());
+
+        final StaplerRequest req = mock(StaplerRequest.class);
+        final StaplerResponse resp = mock(StaplerResponse.class);
+        link.doToggleMode(req, resp);
+        verify(resp).sendRedirect(anyInt(), eq("new-url-for-redirect"));
     }
 
 }
