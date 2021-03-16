@@ -25,6 +25,7 @@
 package bv.offa.jenkins.maintenance;
 
 import hudson.model.ManagementLink;
+import hudson.security.Permission;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyBoolean;
@@ -99,6 +101,7 @@ class MaintenanceModeLinkTest
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).checkPermission(any(Permission.class));
 
         assertThat(link.isActive()).isFalse();
         link.doToggleMode(req, resp);
@@ -112,6 +115,7 @@ class MaintenanceModeLinkTest
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).checkPermission(any(Permission.class));
 
         InOrder inOrder = inOrder(link);
         assertThat(link.isActive()).isFalse();
@@ -129,6 +133,7 @@ class MaintenanceModeLinkTest
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).checkPermission(any(Permission.class));
 
         link.doToggleMode(req, resp);
         verify(link).save();
@@ -149,6 +154,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
+        doNothing().when(link).checkPermission(any(Permission.class));
         final HttpRedirect redirect = new HttpRedirect("new-url-for-redirect");
         doReturn(redirect).when(link).setMaintenanceMode(anyBoolean());
 
@@ -156,4 +162,15 @@ class MaintenanceModeLinkTest
         verify(resp).sendRedirect(anyInt(), eq("new-url-for-redirect"));
     }
 
+    @Test
+    void toggleChecksPermission() throws IOException, ServletException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).checkPermission(any(Permission.class));
+
+        link.doToggleMode(req, resp);
+        verify(link).checkPermission(Jenkins.ADMINISTER);
+    }
 }

@@ -107,6 +107,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @POST
     public synchronized void doToggleMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
+        checkPermission(getRequiredPermission());
         active = !active;
         save();
         setMaintenanceMode(active).generateResponse(req, resp, null);
@@ -136,6 +137,11 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
             return Jenkins.get().doQuietDown();
         }
         return Jenkins.get().doCancelQuietDown();
+    }
+
+    protected void checkPermission(Permission permission)
+    {
+        Jenkins.get().checkPermission(permission);
     }
 
     protected void load() throws IOException
