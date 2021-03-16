@@ -104,12 +104,9 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public HttpResponse doToggleMode(StaplerRequest req) throws IOException
+    public synchronized HttpResponse doToggleMode(StaplerRequest req) throws IOException
     {
-        synchronized (this)
-        {
-            active = !active;
-        }
+        active = !active;
         setMaintenanceMode(active);
         save();
         return HttpResponses.redirectToContextRoot();
