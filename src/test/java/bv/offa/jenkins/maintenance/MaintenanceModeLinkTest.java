@@ -27,10 +27,13 @@ package bv.offa.jenkins.maintenance;
 import hudson.model.ManagementLink;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -42,14 +45,18 @@ import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+@ExtendWith(MockitoExtension.class)
 class MaintenanceModeLinkTest
 {
     private static final HttpRedirect IGNORE_REDIRECT = new HttpRedirect("ignore");
+    @Mock
+    private StaplerRequest req;
+    @Mock
+    private StaplerResponse resp;
 
     @Test
     void postRequired()
@@ -93,8 +100,6 @@ class MaintenanceModeLinkTest
         doNothing().when(link).save();
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
-        final StaplerRequest req = mock(StaplerRequest.class);
-        final StaplerResponse resp = mock(StaplerResponse.class);
         assertThat(link.isActive()).isFalse();
         link.doToggleMode(req, resp);
         assertThat(link.isActive()).isTrue();
@@ -109,8 +114,6 @@ class MaintenanceModeLinkTest
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
         InOrder inOrder = inOrder(link);
-        final StaplerRequest req = mock(StaplerRequest.class);
-        final StaplerResponse resp = mock(StaplerResponse.class);
         assertThat(link.isActive()).isFalse();
         link.doToggleMode(req, resp);
         assertThat(link.isActive()).isTrue();
@@ -127,8 +130,6 @@ class MaintenanceModeLinkTest
         doNothing().when(link).save();
         doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
-        final StaplerRequest req = mock(StaplerRequest.class);
-        final StaplerResponse resp = mock(StaplerResponse.class);
         link.doToggleMode(req, resp);
         verify(link).save();
     }
@@ -151,8 +152,6 @@ class MaintenanceModeLinkTest
         final HttpRedirect redirect = new HttpRedirect("new-url-for-redirect");
         doReturn(redirect).when(link).setMaintenanceMode(anyBoolean());
 
-        final StaplerRequest req = mock(StaplerRequest.class);
-        final StaplerResponse resp = mock(StaplerResponse.class);
         link.doToggleMode(req, resp);
         verify(resp).sendRedirect(anyInt(), eq("new-url-for-redirect"));
     }

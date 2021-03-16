@@ -108,9 +108,8 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     public synchronized void doToggleMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
         active = !active;
-        final HttpRedirect redirect = setMaintenanceMode(active);
         save();
-        redirect.generateResponse(req, resp, null);
+        setMaintenanceMode(active).generateResponse(req, resp, null);
     }
 
     @Override
