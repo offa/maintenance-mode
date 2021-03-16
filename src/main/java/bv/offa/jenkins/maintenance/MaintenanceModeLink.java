@@ -33,14 +33,15 @@ import hudson.init.Initializer;
 import hudson.model.ManagementLink;
 import hudson.model.Saveable;
 import hudson.security.Permission;
-import hudson.util.HttpResponses;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
-import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.CheckForNull;
+import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 
@@ -104,12 +105,12 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public synchronized HttpResponse doToggleMode(StaplerRequest req) throws IOException
+    public synchronized void doToggleMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
         active = !active;
-        setMaintenanceMode(active);
+        final HttpRedirect redirect = setMaintenanceMode(active);
         save();
-        return HttpResponses.redirectToContextRoot();
+        redirect.generateResponse(req, resp, null);
     }
 
     @Override
@@ -121,6 +122,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Initializer(after = InitMilestone.JOB_LOADED)
     public void loadState() throws IOException
     {
@@ -128,16 +130,13 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         setMaintenanceMode(active);
     }
 
-    protected void setMaintenanceMode(boolean enabled)
+    protected HttpRedirect setMaintenanceMode(boolean enabled)
     {
         if (enabled)
         {
-            Jenkins.get().doQuietDown();
+            return Jenkins.get().doQuietDown();
         }
-        else
-        {
-            Jenkins.get().doCancelQuietDown();
-        }
+        return Jenkins.get().doCancelQuietDown();
     }
 
     protected void load() throws IOException

@@ -27,16 +27,28 @@ package bv.offa.jenkins.maintenance;
 import hudson.model.ManagementLink;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.Test;
+import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.mockito.InOrder;
 
+import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
+@SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 class MaintenanceModeLinkTest
 {
+    private static final HttpRedirect IGNORE_REDIRECT = new HttpRedirect("ignore");
+
     @Test
     void postRequired()
     {
@@ -73,46 +85,49 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void toggleChangesState() throws IOException
+    void toggleChangesState() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
         final StaplerRequest req = mock(StaplerRequest.class);
+        final StaplerResponse resp = mock(StaplerResponse.class);
         assertThat(link.isActive()).isFalse();
-        link.doToggleMode(req);
+        link.doToggleMode(req, resp);
         assertThat(link.isActive()).isTrue();
         verify(link).setMaintenanceMode(true);
     }
 
     @Test
-    void toggleChangesStateBackWhenCalledTwice() throws IOException
+    void toggleChangesStateBackWhenCalledTwice() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
         InOrder inOrder = inOrder(link);
         final StaplerRequest req = mock(StaplerRequest.class);
+        final StaplerResponse resp = mock(StaplerResponse.class);
         assertThat(link.isActive()).isFalse();
-        link.doToggleMode(req);
+        link.doToggleMode(req, resp);
         assertThat(link.isActive()).isTrue();
         inOrder.verify(link).setMaintenanceMode(true);
-        link.doToggleMode(req);
+        link.doToggleMode(req, resp);
         assertThat(link.isActive()).isFalse();
         inOrder.verify(link).setMaintenanceMode(false);
     }
 
     @Test
-    void toggleSavesState() throws IOException
+    void toggleSavesState() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
 
         final StaplerRequest req = mock(StaplerRequest.class);
-        link.doToggleMode(req);
+        final StaplerResponse resp = mock(StaplerResponse.class);
+        link.doToggleMode(req, resp);
         verify(link).save();
     }
 
@@ -121,7 +136,7 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).load();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doReturn(IGNORE_REDIRECT).when(link).setMaintenanceMode(anyBoolean());
         link.loadState();
         verify(link).setMaintenanceMode(false);
     }
