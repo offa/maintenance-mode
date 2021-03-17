@@ -27,11 +27,11 @@ package bv.offa.jenkins.maintenance;
 import hudson.model.ManagementLink;
 import hudson.security.Permission;
 import jenkins.model.Jenkins;
+import net.sf.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -40,9 +40,9 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -92,46 +92,88 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void toggleChangesState() throws IOException, ServletException
+    void enableModeChangesState() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
         doNothing().when(link).checkPermission(any(Permission.class));
+        mockFormParameter("");
 
         assertThat(link.isActive()).isFalse();
-        link.doToggleMode(req, resp);
+        link.doEnableMode(req, resp);
         assertThat(link.isActive()).isTrue();
-        verify(link).setMaintenanceMode(true);
+        verify(link).setMaintenanceMode(true, null);
     }
 
     @Test
-    void toggleChangesStateBackWhenCalledTwice() throws IOException, ServletException
+    void disableModeChangesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
         doNothing().when(link).checkPermission(any(Permission.class));
 
-        InOrder inOrder = inOrder(link);
         assertThat(link.isActive()).isFalse();
-        link.doToggleMode(req, resp);
-        assertThat(link.isActive()).isTrue();
-        inOrder.verify(link).setMaintenanceMode(true);
-        link.doToggleMode(req, resp);
+        link.doDisableMode(req, resp);
         assertThat(link.isActive()).isFalse();
-        inOrder.verify(link).setMaintenanceMode(false);
+        verify(link).setMaintenanceMode(false, null);
     }
 
     @Test
-    void toggleSavesState() throws IOException, ServletException
+    void enableModeSetsMessageIfPassed() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
+        doNothing().when(link).checkPermission(any(Permission.class));
+        mockFormParameter("a reason text");
+
+        assertThat(link.isActive()).isFalse();
+        link.doEnableMode(req, resp);
+        assertThat(link.isActive()).isTrue();
+        verify(link).setMaintenanceMode(true, "a reason text");
+    }
+
+    @Test
+    void enableModeUpdatesMessageIfAlreadySet() throws IOException, ServletException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
         doNothing().when(link).checkPermission(any(Permission.class));
 
-        link.doToggleMode(req, resp);
+        mockFormParameter("first reason text");
+        link.doEnableMode(req, resp);
+        verify(link).setMaintenanceMode(true, "first reason text");
+
+        mockFormParameter("second reason text");
+        link.doEnableMode(req, resp);
+        verify(link).setMaintenanceMode(true, "second reason text");
+    }
+
+    @Test
+    void enableModeSavesState() throws IOException, ServletException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        doNothing().when(link).checkPermission(any(Permission.class));
+        mockFormParameter("");
+
+        link.doEnableMode(req, resp);
+        verify(link).save();
+    }
+
+    @Test
+    void disableModeSavesState() throws IOException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        doNothing().when(link).checkPermission(any(Permission.class));
+
+        link.doDisableMode(req, resp);
         verify(link).save();
     }
 
@@ -140,33 +182,67 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).load();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         link.loadState();
-        verify(link).setMaintenanceMode(false);
+        verify(link).setMaintenanceMode(false, null);
     }
 
     @Test
-    void toggleRedirects() throws IOException, ServletException
+    void enableModeRedirects() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
         doNothing().when(link).checkPermission(any(Permission.class));
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         when(req.getContextPath()).thenReturn("redirect-url");
+        mockFormParameter("");
 
-        link.doToggleMode(req, resp);
+        link.doEnableMode(req, resp);
         verify(resp).sendRedirect2("redirect-url");
     }
 
     @Test
-    void toggleChecksPermission() throws IOException, ServletException
+    void disableModeRedirects() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean());
+        doNothing().when(link).checkPermission(any(Permission.class));
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        when(req.getContextPath()).thenReturn("redirect-url");
+
+        link.doDisableMode(req, resp);
+        verify(resp).sendRedirect2("redirect-url");
+    }
+
+    @Test
+    void enableModeChecksPermission() throws IOException, ServletException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        doNothing().when(link).checkPermission(any(Permission.class));
+        mockFormParameter("");
+
+        link.doEnableMode(req, resp);
+        verify(link).checkPermission(Jenkins.ADMINISTER);
+    }
+
+    @Test
+    void disableModeChecksPermission() throws IOException
+    {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         doNothing().when(link).checkPermission(any(Permission.class));
 
-        link.doToggleMode(req, resp);
+        link.doDisableMode(req, resp);
         verify(link).checkPermission(Jenkins.ADMINISTER);
+    }
+
+    private void mockFormParameter(String reason) throws ServletException
+    {
+        final JSONObject obj = new JSONObject();
+        obj.put("reasonText", reason);
+        when(req.getSubmittedForm()).thenReturn(obj);
     }
 }

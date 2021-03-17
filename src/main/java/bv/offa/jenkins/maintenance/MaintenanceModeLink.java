@@ -35,12 +35,13 @@ import hudson.model.Saveable;
 import hudson.security.Permission;
 import hudson.util.XStream2;
 import jenkins.model.Jenkins;
-import org.kohsuke.stapler.HttpRedirect;
+import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.verb.POST;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
@@ -105,13 +106,20 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public synchronized void doToggleMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
+    public synchronized void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
         checkPermission(getRequiredPermission());
-        active = !active;
-        save();
-        setMaintenanceMode(active);
-        resp.sendRedirect2(req.getContextPath());
+
+        final JSONObject submittedForm = req.getSubmittedForm();
+        final String reasonText = submittedForm.getString("reasonText").trim();
+        updateState(req, resp, true, reasonText.isEmpty() ? null : reasonText);
+    }
+
+    @POST
+    public synchronized void doDisableMode(StaplerRequest req, StaplerResponse resp) throws IOException
+    {
+        checkPermission(getRequiredPermission());
+        updateState(req, resp, false, null);
     }
 
     @Override
@@ -123,20 +131,26 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-
     @Initializer(after = InitMilestone.JOB_LOADED)
     public void loadState() throws IOException
     {
         load();
-        setMaintenanceMode(active);
+        setMaintenanceMode(active, null);
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected void setMaintenanceMode(boolean enabled)
+    protected void setMaintenanceMode(boolean enabled, @Nullable String reason)
     {
         if (enabled)
         {
-            Jenkins.get().doQuietDown();
+            try
+            {
+                Jenkins.get().doQuietDown(false, 0, reason);
+            }
+            catch (InterruptedException | IOException e)
+            {
+                throw new AssertionError(e);
+            }
         }
         else
         {
@@ -157,6 +171,14 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         {
             configFile.unmarshal(this);
         }
+    }
+
+    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @Nullable String reason) throws IOException
+    {
+        active = enabled;
+        save();
+        setMaintenanceMode(active, reason);
+        resp.sendRedirect2(req.getContextPath());
     }
 
     private XmlFile getConfigFile()
