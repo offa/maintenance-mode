@@ -95,9 +95,7 @@ class MaintenanceModeLinkTest
     void enableModeChangesState() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
         mockFormParameter("");
 
         assertThat(link.isActive()).isFalse();
@@ -110,9 +108,7 @@ class MaintenanceModeLinkTest
     void disableModeChangesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
 
         assertThat(link.isActive()).isFalse();
         link.doDisableMode(req, resp);
@@ -124,9 +120,7 @@ class MaintenanceModeLinkTest
     void enableModeSetsMessageIfPassed() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
         mockFormParameter("a reason text");
 
         assertThat(link.isActive()).isFalse();
@@ -139,9 +133,7 @@ class MaintenanceModeLinkTest
     void enableModeUpdatesMessageIfAlreadySet() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), nullable(String.class));
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
 
         mockFormParameter("first reason text");
         link.doEnableMode(req, resp);
@@ -156,9 +148,7 @@ class MaintenanceModeLinkTest
     void enableModeSavesState() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
         mockFormParameter("");
 
         link.doEnableMode(req, resp);
@@ -169,9 +159,7 @@ class MaintenanceModeLinkTest
     void disableModeSavesState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
 
         link.doDisableMode(req, resp);
         verify(link).save();
@@ -181,7 +169,7 @@ class MaintenanceModeLinkTest
     void loadStateRestoresState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).load();
+        doNothing().when(link).load(); // TODO
         doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         link.loadState();
         verify(link).setMaintenanceMode(false, null);
@@ -191,9 +179,7 @@ class MaintenanceModeLinkTest
     void enableModeRedirects() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).checkPermission(any(Permission.class));
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        mockForSave(link);
         when(req.getContextPath()).thenReturn("redirect-url");
         mockFormParameter("");
 
@@ -205,9 +191,7 @@ class MaintenanceModeLinkTest
     void disableModeRedirects() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).checkPermission(any(Permission.class));
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        mockForSave(link);
         when(req.getContextPath()).thenReturn("redirect-url");
 
         link.doDisableMode(req, resp);
@@ -218,9 +202,7 @@ class MaintenanceModeLinkTest
     void enableModeChecksPermission() throws IOException, ServletException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
         mockFormParameter("");
 
         link.doEnableMode(req, resp);
@@ -231,9 +213,7 @@ class MaintenanceModeLinkTest
     void disableModeChecksPermission() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).save();
-        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
-        doNothing().when(link).checkPermission(any(Permission.class));
+        mockForSave(link);
 
         link.doDisableMode(req, resp);
         verify(link).checkPermission(Jenkins.ADMINISTER);
@@ -244,5 +224,12 @@ class MaintenanceModeLinkTest
         final JSONObject obj = new JSONObject();
         obj.put("reasonText", reason);
         when(req.getSubmittedForm()).thenReturn(obj);
+    }
+
+    private void mockForSave(MaintenanceModeLink link) throws IOException
+    {
+        doNothing().when(link).save();
+        doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
+        doNothing().when(link).checkPermission(any(Permission.class));
     }
 }
