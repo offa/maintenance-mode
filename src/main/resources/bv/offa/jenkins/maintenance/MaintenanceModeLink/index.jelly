@@ -28,7 +28,7 @@ SOFTWARE.
         <l:main-panel>
             <f:section title="${%maintenancemode}"/>
             <f:form method="post" action="enableMode" name="enable-mode">
-                <f:entry title="Reason">
+                <f:entry title="${%maintenancemode.reason}">
                     <f:textbox name="parameter.reasonText" value="${app.quietDownReason ?: null}"/>
                 </f:entry>
 
