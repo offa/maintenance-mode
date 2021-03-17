@@ -28,16 +28,16 @@ SOFTWARE.
         <l:main-panel>
             <f:section title="${%maintenancemode}"/>
             <f:form method="post" action="enableMode" name="enable-mode">
+                <f:entry title="Reason">
+                    <f:textbox name="parameter.reasonText" value="${app.quietDownReason ?: null}"/>
+                </f:entry>
+
                 <j:if test="${!it.active}">
                     <f:submit value="${%maintenancemode.enable}"/>
                 </j:if>
                 <j:if test="${it.active}">
                     <f:submit value="${%maintenancemode.updatereason}"/>
                 </j:if>
-
-                <f:entry title="Reason">
-                    <f:textbox name="parameter.reasonText" value="${app.quietDownReason ?: null}"/>
-                </f:entry>
             </f:form>
 
             <j:if test="${it.active}">
