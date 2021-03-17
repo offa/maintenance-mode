@@ -31,18 +31,21 @@ SOFTWARE.
                 <f:entry title="${%maintenancemode.reason}">
                     <f:textbox name="parameter.reasonText" value="${app.quietDownReason ?: null}"/>
                 </f:entry>
-
-                <j:if test="${!it.active}">
-                    <f:submit value="${%maintenancemode.enable}"/>
-                </j:if>
-                <j:if test="${it.active}">
-                    <f:submit value="${%maintenancemode.updatereason}"/>
-                </j:if>
+                <f:bottomButtonBar>
+                    <j:if test="${!it.active}">
+                        <f:submit value="${%maintenancemode.enable}"/>
+                    </j:if>
+                    <j:if test="${it.active}">
+                        <f:submit value="${%maintenancemode.updatereason}"/>
+                    </j:if>
+                </f:bottomButtonBar>
             </f:form>
 
             <j:if test="${it.active}">
                 <f:form method="post" action="disableMode" name="disable-mode">
-                    <f:submit value="${%maintenancemode.disable}"/>
+                    <f:bottomButtonBar>
+                        <f:submit value="${%maintenancemode.disable}"/>
+                    </f:bottomButtonBar>
                 </f:form>
             </j:if>
         </l:main-panel>
