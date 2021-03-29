@@ -51,6 +51,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 {
     private static final XStream2 XSTREAM = new XStream2();
     private volatile boolean active;
+    private String reason;
 
 
     @CheckForNull
@@ -105,6 +106,11 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         return active;
     }
 
+    public String getReason()
+    {
+        return reason;
+    }
+
     @POST
     public synchronized void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
@@ -135,7 +141,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     public void loadState() throws IOException
     {
         load();
-        setMaintenanceMode(active, null);
+        setMaintenanceMode(active, reason);
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
@@ -173,9 +179,10 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @Nullable String reason) throws IOException
+    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @Nullable String reasonText) throws IOException
     {
         active = enabled;
+        reason = reasonText;
         save();
         setMaintenanceMode(active, reason);
         resp.sendRedirect2(req.getContextPath());

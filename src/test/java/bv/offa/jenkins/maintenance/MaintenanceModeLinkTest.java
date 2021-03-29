@@ -40,7 +40,6 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -89,6 +88,13 @@ class MaintenanceModeLinkTest
     {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.isActive()).isFalse();
+    }
+
+    @Test
+    void messageIsNotSetByDefault()
+    {
+        final MaintenanceModeLink link = new MaintenanceModeLink();
+        assertThat(link.getReason()).isNull();
     }
 
     @Test
@@ -169,7 +175,7 @@ class MaintenanceModeLinkTest
     void loadStateRestoresState() throws IOException
     {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
-        doNothing().when(link).load(); // TODO
+        doNothing().when(link).load();
         doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         link.loadState();
         verify(link).setMaintenanceMode(false, null);

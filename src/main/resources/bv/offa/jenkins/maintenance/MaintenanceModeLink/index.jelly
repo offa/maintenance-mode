@@ -29,7 +29,7 @@ SOFTWARE.
             <f:section title="${%maintenancemode}"/>
             <f:form method="post" action="enableMode" name="enable-mode">
                 <f:entry title="${%maintenancemode.reason}">
-                    <f:textbox name="parameter.reasonText" value="${app.quietDownReason ?: null}"/>
+                    <f:textbox name="parameter.reasonText" value="${it.reason ?: null}"/>
                 </f:entry>
                 <f:bottomButtonBar>
                     <j:if test="${!it.active}">
