@@ -15,6 +15,9 @@
     <properties>
         <jenkins.version>2.277.1</jenkins.version>
         <java.level>8</java.level>
+
+        <junit.version>5.7.2</junit.version>
+        <mockito.version>3.10.0</mockito.version>
     </properties>
 
     <name>Maintenance Mode</name>
@@ -61,13 +64,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.7.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -79,14 +82,14 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.10.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
-            <version>3.10.0</version>
+            <version>${mockito.version}</version>
         </dependency>
         <!-- Necessary for test compatibility -->
         <dependency>
