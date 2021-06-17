@@ -24,7 +24,9 @@
 
 package bv.offa.jenkins.maintenance;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.BulkChange;
 import hudson.Extension;
 import hudson.XmlFile;
@@ -40,8 +42,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
