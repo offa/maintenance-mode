@@ -5,11 +5,11 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.19</version>
-        <relativePath/>
+        <relativePath />
     </parent>
     <groupId>bv.offa</groupId>
     <artifactId>maintenance-mode</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -34,7 +34,7 @@
         <connection>scm:git:git://github.com/offa/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:offa/${project.artifactId}.git</developerConnection>
         <url>${project.url}</url>
-        <tag>HEAD</tag>
+        <tag>v0.1.1</tag>
     </scm>
 
     <build>
