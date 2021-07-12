@@ -6,3 +6,9 @@
 ![Java](https://img.shields.io/badge/java-1.8-green.svg)
 
 Stops executing new builds across restarts.
+
+Unlike *Prepare for Shutdown*, the maintenance mode keeps the state until disabled explicitly. 
+
+## Usage
+
+Enable / disable the maintenance mode through ***Manage Jenkins → Maintenance Mode***.
