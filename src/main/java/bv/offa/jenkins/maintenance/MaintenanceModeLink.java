@@ -112,7 +112,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public synchronized void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
+    public void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
         checkPermission(getRequiredPermission());
 
@@ -122,7 +122,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public synchronized void doDisableMode(StaplerRequest req, StaplerResponse resp) throws IOException
+    public void doDisableMode(StaplerRequest req, StaplerResponse resp) throws IOException
     {
         checkPermission(getRequiredPermission());
         updateState(req, resp, false, null);
@@ -140,8 +140,11 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Initializer(after = InitMilestone.JOB_LOADED)
     public void loadState() throws IOException
     {
-        load();
-        setMaintenanceMode(active, reason);
+        synchronized (this)
+        {
+            load();
+            setMaintenanceMode(active, reason);
+        }
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
@@ -181,11 +184,14 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 
     private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @Nullable String reasonText) throws IOException
     {
-        active = enabled;
-        reason = reasonText;
-        save();
-        setMaintenanceMode(active, reason);
-        resp.sendRedirect2(req.getContextPath());
+        synchronized (this)
+        {
+            active = enabled;
+            reason = reasonText;
+            save();
+            setMaintenanceMode(active, reason);
+            resp.sendRedirect2(req.getContextPath());
+        }
     }
 
     private XmlFile getConfigFile()
