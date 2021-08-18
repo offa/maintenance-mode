@@ -111,6 +111,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         return reason;
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     @POST
     public void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
     {
@@ -147,7 +148,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @SuppressWarnings("PMD.ThrowableResultOfMethodCallIgnored")
     protected void setMaintenanceMode(boolean enabled, @Nullable String reason)
     {
         if (enabled)
