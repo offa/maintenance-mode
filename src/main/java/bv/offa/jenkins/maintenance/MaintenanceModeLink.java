@@ -148,7 +148,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    @SuppressWarnings("PMD.ThrowableResultOfMethodCallIgnored")
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected void setMaintenanceMode(boolean enabled, @Nullable String reason)
     {
         if (enabled)
