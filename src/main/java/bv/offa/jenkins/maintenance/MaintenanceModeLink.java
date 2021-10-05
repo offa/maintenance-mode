@@ -26,7 +26,6 @@ package bv.offa.jenkins.maintenance;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.BulkChange;
 import hudson.Extension;
 import hudson.XmlFile;
@@ -149,7 +148,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected void setMaintenanceMode(boolean enabled, @Nullable String reason)
+    protected void setMaintenanceMode(boolean enabled, @CheckForNull String reason)
     {
         if (enabled)
         {
@@ -183,7 +182,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @Nullable String reasonText) throws IOException
+    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @CheckForNull String reasonText) throws IOException
     {
         synchronized (this)
         {
