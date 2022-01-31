@@ -9,7 +9,7 @@
     </parent>
     <groupId>bv.offa</groupId>
     <artifactId>maintenance-mode</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -34,7 +34,7 @@
         <connection>scm:git:git://github.com/offa/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:offa/${project.artifactId}.git</developerConnection>
         <url>${project.url}</url>
-        <tag>v0.1.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
