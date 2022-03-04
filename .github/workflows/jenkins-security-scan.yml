@@ -2,9 +2,11 @@ name: jenkins-security-scan
 
 on:
   push:
-    branches-ignore:
-      - "dependabot/**"
+    branches:
+      - $default-branch
   pull_request:
+  schedule:
+    - cron: '0 5 * * 3'
 
 jobs:
   jenkins-security-scan:
