@@ -92,20 +92,6 @@
             <scope>test</scope>
             <version>${mockito.version}</version>
         </dependency>
-        <!-- Necessary for test compatibility -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Upper bound -->
-        <dependency>
-            <groupId>com.google.errorprone</groupId>
-            <artifactId>error_prone_annotations</artifactId>
-            <version>2.11.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <repositories>
