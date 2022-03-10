@@ -1,10 +1,6 @@
 name: jenkins-security-scan
 
 on:
-  push:
-    branches:
-      - $default-branch
-  pull_request:
   schedule:
     - cron: '0 5 * * 3'
 
