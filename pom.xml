@@ -21,7 +21,6 @@
     </properties>
 
     <name>Maintenance Mode</name>
-    <description>Jenkins maintenance mode.</description>
 
     <licenses>
         <license>
