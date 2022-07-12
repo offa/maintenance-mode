@@ -13,7 +13,7 @@
     <packaging>hpi</packaging>
 
     <properties>
-        <jenkins.version>2.332.1</jenkins.version>
+        <jenkins.version>2.346.1</jenkins.version>
 
         <junit.version>5.8.2</junit.version>
         <mockito.version>4.6.1</mockito.version>
