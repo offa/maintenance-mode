@@ -29,7 +29,7 @@
     </licenses>
     <url>https://github.com/offa/${project.artifactId}</url>
     <scm>
-        <connection>scm:git:git://github.com/offa/${project.artifactId}.git</connection>
+        <connection>scm:git:https://github.com/offa/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:offa/${project.artifactId}.git</developerConnection>
         <url>${project.url}</url>
         <tag>HEAD</tag>
