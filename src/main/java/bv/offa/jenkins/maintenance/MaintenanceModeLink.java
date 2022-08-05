@@ -49,6 +49,7 @@ import java.io.IOException;
 public class MaintenanceModeLink extends ManagementLink implements Saveable
 {
     private static final XStream2 XSTREAM = new XStream2();
+    private final Object lock = new Object();
     private volatile boolean active;
     private String reason;
 
@@ -107,7 +108,10 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 
     public String getReason()
     {
-        return reason;
+        synchronized (lock)
+        {
+            return reason;
+        }
     }
 
     @SuppressWarnings("PMD.NullAssignment")
@@ -140,7 +144,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     @Initializer(after = InitMilestone.JOB_LOADED)
     public void loadState() throws IOException
     {
-        synchronized (this)
+        synchronized (lock)
         {
             load();
             setMaintenanceMode(active, reason);
@@ -184,7 +188,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 
     private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @CheckForNull String reasonText) throws IOException
     {
-        synchronized (this)
+        synchronized (lock)
         {
             active = enabled;
             reason = reasonText;
