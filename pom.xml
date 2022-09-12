@@ -16,7 +16,7 @@
         <jenkins.version>2.346.1</jenkins.version>
 
         <junit.version>5.9.0</junit.version>
-        <mockito.version>4.7.0</mockito.version>
+        <mockito.version>4.8.0</mockito.version>
     </properties>
 
     <name>Maintenance Mode</name>
