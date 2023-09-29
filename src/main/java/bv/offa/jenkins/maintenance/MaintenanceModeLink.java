@@ -48,7 +48,7 @@ import java.io.IOException;
 @Extension
 public class MaintenanceModeLink extends ManagementLink implements Saveable
 {
-    private static final XStream2 XSTREAM = new XStream2();
+    private static final XStream2 XSTREAM = new XStream2(XStream2.getDefaultDriver());
     private final Object lock = new Object();
     private volatile boolean active;
     private String reason;
