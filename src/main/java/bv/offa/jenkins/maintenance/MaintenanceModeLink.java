@@ -158,7 +158,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         {
             try
             {
-                Jenkins.get().doQuietDown(false, 0, reason);
+                Jenkins.get().doQuietDown(false, 0, reason, false);
             }
             catch (InterruptedException | IOException e)
             {
