@@ -36,7 +36,7 @@ SOFTWARE.
                         <f:submit value="${%maintenancemode.enable}"/>
                     </j:if>
                     <j:if test="${it.active}">
-                        <f:submit value="${%maintenancemode.updatereason}"/>
+                        <f:submit value="${%maintenancemode.updatereason}" clazz="jenkins-!-destructive-color"/>
                     </j:if>
                 </f:bottomButtonBar>
             </f:form>
