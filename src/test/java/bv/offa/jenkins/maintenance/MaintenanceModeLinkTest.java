@@ -26,16 +26,16 @@ package bv.offa.jenkins.maintenance;
 
 import hudson.model.ManagementLink;
 import hudson.security.Permission;
+import jakarta.servlet.ServletException;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -50,9 +50,9 @@ import static org.mockito.Mockito.when;
 class MaintenanceModeLinkTest
 {
     @Mock
-    private StaplerRequest req;
+    private StaplerRequest2 req;
     @Mock
-    private StaplerResponse resp;
+    private StaplerResponse2 resp;
 
     @Test
     void postRequired()
