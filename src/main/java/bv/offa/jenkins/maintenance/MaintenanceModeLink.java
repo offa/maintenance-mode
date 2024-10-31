@@ -35,13 +35,13 @@ import hudson.model.ManagementLink;
 import hudson.model.Saveable;
 import hudson.security.Permission;
 import hudson.util.XStream2;
+import jakarta.servlet.ServletException;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 
@@ -116,8 +116,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 
     @SuppressWarnings("PMD.NullAssignment")
     @POST
-    public void doEnableMode(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException
-    {
+    public void doEnableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException, ServletException {
         checkPermission(getRequiredPermission());
 
         final JSONObject submittedForm = req.getSubmittedForm();
@@ -126,7 +125,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public void doDisableMode(StaplerRequest req, StaplerResponse resp) throws IOException
+    public void doDisableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException
     {
         checkPermission(getRequiredPermission());
         updateState(req, resp, false, null);
@@ -186,7 +185,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    private void updateState(StaplerRequest req, StaplerResponse resp, boolean enabled, @CheckForNull String reasonText) throws IOException
+    private void updateState(StaplerRequest2 req, StaplerResponse2 resp, boolean enabled, @CheckForNull String reasonText) throws IOException
     {
         synchronized (lock)
         {
