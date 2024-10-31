@@ -37,7 +37,6 @@ import hudson.security.Permission;
 import hudson.util.XStream2;
 import jakarta.servlet.ServletException;
 import jenkins.model.Jenkins;
-import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
@@ -114,13 +113,11 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    @SuppressWarnings("PMD.NullAssignment")
     @POST
     public void doEnableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException, ServletException {
         checkPermission(getRequiredPermission());
 
-        final JSONObject submittedForm = req.getSubmittedForm();
-        final String reasonText = submittedForm.getString("reasonText").trim();
+        final String reasonText = req.getSubmittedForm().getString("reasonText").trim();
         updateState(req, resp, true, reasonText.isEmpty() ? null : reasonText);
     }
 
