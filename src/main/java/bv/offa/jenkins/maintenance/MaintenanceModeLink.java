@@ -182,6 +182,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
+    @POST
     private void updateState(StaplerRequest2 req, StaplerResponse2 resp, boolean enabled, @CheckForNull String reasonText) throws IOException
     {
         synchronized (lock)
