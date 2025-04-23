@@ -28,7 +28,7 @@ jobs:
       - name: CodeQL Initialization
         uses: github/codeql-action/init@v3
         with:
-          languages: java
+          languages: java, actions
           queries: +security-and-quality
           build-mode: none
       - name: CodeQL Analysis
