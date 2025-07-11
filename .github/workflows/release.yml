@@ -18,8 +18,14 @@ jobs:
         with:
           java-version: 17
           pmd: false
+      - name: Checksum
+        run: |
+          cd target/
+          for f in maintenance-mode-*.hpi; do sha256sum "$f" | tee "$f.sha256"; done
       - name: Release
         uses: softprops/action-gh-release@f37a2f9143791b88da06f2c143d376e00fce81dc
         if: github.ref_type == 'tag'
         with:
-          files: target/maintenance-mode-*.hpi
+          files: |
+            target/maintenance-mode-*.hpi
+            target/maintenance-mode-*.hpi.sha256
