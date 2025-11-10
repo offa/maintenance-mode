@@ -23,7 +23,7 @@ jobs:
           cd target/
           for f in maintenance-mode-*.hpi; do sha256sum "$f" | tee "$f.sha256"; done
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe
         if: github.ref_type == 'tag'
         with:
           files: |
