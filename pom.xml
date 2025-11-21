@@ -14,6 +14,7 @@
 
     <properties>
         <jenkins.version>2.492.1</jenkins.version>
+        <hpi.strictBundleArtifacts>true</hpi.strictBundleArtifacts>
     </properties>
 
     <name>Maintenance Mode</name>
