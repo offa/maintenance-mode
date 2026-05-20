@@ -45,8 +45,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Extension
-public class MaintenanceModeLink extends ManagementLink implements Saveable
-{
+public class MaintenanceModeLink extends ManagementLink implements Saveable {
     private static final XStream2 XSTREAM = new XStream2(XStream2.getDefaultDriver());
     private final Object lock = new Object();
     private volatile boolean active;
@@ -55,53 +54,44 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
 
     @CheckForNull
     @Override
-    public String getIconFileName()
-    {
+    public String getIconFileName() {
         return isActive() ? "error.png" : "accept.png";
     }
 
     @CheckForNull
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return isActive() ? Messages.MaintenanceModeLink_displayname_enabled() : Messages.MaintenanceModeLink_displayname_disabled();
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return Messages.MaintenanceModeLink_description();
     }
 
     @CheckForNull
     @Override
-    public String getUrlName()
-    {
+    public String getUrlName() {
         return "maintenance-mode";
     }
 
     @Override
-    public boolean getRequiresPOST()
-    {
+    public boolean getRequiresPOST() {
         return true;
     }
 
     @NonNull
     @Override
-    public Category getCategory()
-    {
+    public Category getCategory() {
         return Category.TOOLS;
     }
 
-    public boolean isActive()
-    {
+    public boolean isActive() {
         return active;
     }
 
-    public String getReason()
-    {
-        synchronized (lock)
-        {
+    public String getReason() {
+        synchronized (lock) {
             return reason;
         }
     }
@@ -115,71 +105,54 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
     }
 
     @POST
-    public void doDisableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException
-    {
+    public void doDisableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException {
         checkPermission(getRequiredPermission());
         updateState(req, resp, false, null);
     }
 
     @Override
-    public void save() throws IOException
-    {
-        if (!BulkChange.contains(this))
-        {
+    public void save() throws IOException {
+        if (!BulkChange.contains(this)) {
             getConfigFile().write(this);
         }
     }
 
     @Initializer(after = InitMilestone.JOB_LOADED)
-    public void loadState() throws IOException
-    {
-        synchronized (lock)
-        {
+    public void loadState() throws IOException {
+        synchronized (lock) {
             load();
             setMaintenanceMode(active, reason);
         }
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected void setMaintenanceMode(boolean enabled, @CheckForNull String reason)
-    {
-        if (enabled)
-        {
-            try
-            {
+    protected void setMaintenanceMode(boolean enabled, @CheckForNull String reason) {
+        if (enabled) {
+            try {
                 Jenkins.get().doQuietDown(false, 0, reason, false);
-            }
-            catch (InterruptedException | IOException e)
-            {
+            } catch (InterruptedException | IOException e) {
                 throw new AssertionError(e);
             }
-        }
-        else
-        {
+        } else {
             Jenkins.get().doCancelQuietDown();
         }
     }
 
-    protected void checkPermission(Permission permission)
-    {
+    protected void checkPermission(Permission permission) {
         Jenkins.get().checkPermission(permission);
     }
 
-    protected void load() throws IOException
-    {
+    protected void load() throws IOException {
         final XmlFile configFile = getConfigFile();
 
-        if (configFile.exists())
-        {
+        if (configFile.exists()) {
             configFile.unmarshal(this);
         }
     }
 
     @POST
-    private void updateState(StaplerRequest2 req, StaplerResponse2 resp, boolean enabled, @CheckForNull String reasonText) throws IOException
-    {
-        synchronized (lock)
-        {
+    private void updateState(StaplerRequest2 req, StaplerResponse2 resp, boolean enabled, @CheckForNull String reasonText) throws IOException {
+        synchronized (lock) {
             active = enabled;
             reason = reasonText;
             save();
@@ -188,8 +161,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         }
     }
 
-    private XmlFile getConfigFile()
-    {
+    private XmlFile getConfigFile() {
         return new XmlFile(XSTREAM, new File(Jenkins.get().getRootDir(), "bv.offa.jenkins.maintenancemode.xml"));
     }
 
