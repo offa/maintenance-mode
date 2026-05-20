@@ -47,58 +47,50 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MaintenanceModeLinkTest
-{
+class MaintenanceModeLinkTest {
     @Mock
     private StaplerRequest2 req;
     @Mock
     private StaplerResponse2 resp;
 
     @Test
-    void postRequired()
-    {
+    void postRequired() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getRequiresPOST()).isTrue();
     }
 
     @Test
-    void stableUrlName()
-    {
+    void stableUrlName() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getUrlName()).isEqualTo("maintenance-mode");
     }
 
     @Test
-    void supportsCategory()
-    {
+    void supportsCategory() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getCategory()).isEqualTo(ManagementLink.Category.TOOLS);
     }
 
     @Test
-    void requiredPermission()
-    {
+    void requiredPermission() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getRequiredPermission()).isEqualTo(Jenkins.ADMINISTER);
     }
 
     @Test
-    void isInactiveByDefault()
-    {
+    void isInactiveByDefault() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.isActive()).isFalse();
     }
 
     @Test
-    void messageIsNotSetByDefault()
-    {
+    void messageIsNotSetByDefault() {
         final MaintenanceModeLink link = new MaintenanceModeLink();
         assertThat(link.getReason()).isNull();
     }
 
     @Test
-    void enableModeChangesState() throws IOException, ServletException
-    {
+    void enableModeChangesState() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         mockFormParameter("");
@@ -110,8 +102,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void disableModeChangesState() throws IOException
-    {
+    void disableModeChangesState() throws IOException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
 
@@ -122,8 +113,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void enableModeSetsMessageIfPassed() throws IOException, ServletException
-    {
+    void enableModeSetsMessageIfPassed() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         mockFormParameter("a reason text");
@@ -135,8 +125,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void enableModeUpdatesMessageIfAlreadySet() throws IOException, ServletException
-    {
+    void enableModeUpdatesMessageIfAlreadySet() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
 
@@ -150,8 +139,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void enableModeSavesState() throws IOException, ServletException
-    {
+    void enableModeSavesState() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         mockFormParameter("");
@@ -161,8 +149,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void disableModeSavesState() throws IOException
-    {
+    void disableModeSavesState() throws IOException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
 
@@ -171,8 +158,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void loadStateRestoresState() throws IOException
-    {
+    void loadStateRestoresState() throws IOException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         doNothing().when(link).load();
         doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
@@ -181,8 +167,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void enableModeRedirects() throws IOException, ServletException
-    {
+    void enableModeRedirects() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         when(req.getContextPath()).thenReturn("redirect-url");
@@ -193,8 +178,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void disableModeRedirects() throws IOException
-    {
+    void disableModeRedirects() throws IOException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         when(req.getContextPath()).thenReturn("redirect-url");
@@ -204,8 +188,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void enableModeChecksPermission() throws IOException, ServletException
-    {
+    void enableModeChecksPermission() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
         mockFormParameter("");
@@ -215,8 +198,7 @@ class MaintenanceModeLinkTest
     }
 
     @Test
-    void disableModeChecksPermission() throws IOException
-    {
+    void disableModeChecksPermission() throws IOException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
 
@@ -224,15 +206,13 @@ class MaintenanceModeLinkTest
         verify(link).checkPermission(Jenkins.ADMINISTER);
     }
 
-    private void mockFormParameter(String reason) throws ServletException
-    {
+    private void mockFormParameter(String reason) throws ServletException {
         final JSONObject obj = new JSONObject();
         obj.put("reasonText", reason);
         when(req.getSubmittedForm()).thenReturn(obj);
     }
 
-    private void mockForSave(MaintenanceModeLink link) throws IOException
-    {
+    private void mockForSave(MaintenanceModeLink link) throws IOException {
         doNothing().when(link).save();
         doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         doNothing().when(link).checkPermission(any(Permission.class));
