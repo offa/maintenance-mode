@@ -93,13 +93,6 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable
         return Category.TOOLS;
     }
 
-    @NonNull
-    @Override
-    public Permission getRequiredPermission()
-    {
-        return Jenkins.ADMINISTER;
-    }
-
     public boolean isActive()
     {
         return active;
