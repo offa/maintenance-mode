@@ -37,6 +37,7 @@ import hudson.security.Permission;
 import hudson.util.XStream2;
 import jakarta.servlet.ServletException;
 import jenkins.model.Jenkins;
+import jenkins.security.XStreamNotDeserializable;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
@@ -47,7 +48,8 @@ import java.io.IOException;
 @Extension
 public class MaintenanceModeLink extends ManagementLink implements Saveable {
     private static final XStream2 XSTREAM = new XStream2(XStream2.getDefaultDriver());
-    private final Object lock = new Object();
+    @XStreamNotDeserializable
+    private final transient Object lock = new Object();
     private volatile boolean active;
     private String reason;
 
