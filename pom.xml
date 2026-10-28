@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>6.2236.v12dd4c483242</version>
+        <version>6.2250.va_d01d559a_209</version>
         <relativePath />
     </parent>
     <groupId>bv.offa</groupId>
@@ -13,7 +13,7 @@
     <packaging>hpi</packaging>
 
     <properties>
-        <jenkins.version>2.541.1</jenkins.version>
+        <jenkins.version>2.580.1</jenkins.version>
         <hpi.strictBundleArtifacts>true</hpi.strictBundleArtifacts>
     </properties>
 
