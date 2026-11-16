@@ -34,14 +34,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -125,6 +130,26 @@ class MaintenanceModeLinkTest {
     }
 
     @Test
+    void enableModeWithoutReasonFieldUsesNullReason() throws IOException, ServletException {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        mockForSave(link);
+        when(req.getSubmittedForm()).thenReturn(new JSONObject());
+
+        link.doEnableMode(req, resp);
+        verify(link).setMaintenanceMode(true, null);
+    }
+
+    @Test
+    void enableModeWithBlankReasonUsesNullReason() throws IOException, ServletException {
+        final MaintenanceModeLink link = spy(new MaintenanceModeLink());
+        mockForSave(link);
+        mockFormParameter("   ");
+
+        link.doEnableMode(req, resp);
+        verify(link).setMaintenanceMode(true, null);
+    }
+
+    @Test
     void enableModeUpdatesMessageIfAlreadySet() throws IOException, ServletException {
         final MaintenanceModeLink link = spy(new MaintenanceModeLink());
         mockForSave(link);
@@ -164,6 +189,25 @@ class MaintenanceModeLinkTest {
         doNothing().when(link).setMaintenanceMode(anyBoolean(), any());
         link.loadState();
         verify(link).setMaintenanceMode(false, null);
+    }
+
+    @Test
+    void setMaintenanceModeInterruptedRestoresFlagAndRethrows() throws IOException, InterruptedException {
+        final Jenkins jenkins = mock(Jenkins.class);
+        doThrow(new InterruptedException("interrupted")).when(jenkins).doQuietDown(false, 0, "a reason", false);
+
+        try (MockedStatic<Jenkins> staticJenkins = mockStatic(Jenkins.class)) {
+            staticJenkins.when(Jenkins::get).thenReturn(jenkins);
+
+            final MaintenanceModeLink link = new MaintenanceModeLink();
+            final IllegalStateException exception = assertThrows(
+                    IllegalStateException.class,
+                    () -> link.setMaintenanceMode(true, "a reason"));
+
+            assertThat(exception).hasMessageThat().contains("Failed to enable maintenance mode");
+            assertThat(exception.getCause()).isInstanceOf(InterruptedException.class);
+            assertThat(Thread.interrupted()).isTrue();
+        }
     }
 
     @Test

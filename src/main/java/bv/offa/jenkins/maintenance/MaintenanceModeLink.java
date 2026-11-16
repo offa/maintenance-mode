@@ -102,7 +102,7 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable {
     public void doEnableMode(StaplerRequest2 req, StaplerResponse2 resp) throws IOException, ServletException {
         checkPermission(getRequiredPermission());
 
-        final String reasonText = req.getSubmittedForm().getString("reasonText").trim();
+        final String reasonText = req.getSubmittedForm().optString("reasonText").trim();
         updateState(req, resp, true, reasonText.isEmpty() ? null : reasonText);
     }
 
@@ -127,13 +127,15 @@ public class MaintenanceModeLink extends ManagementLink implements Saveable {
         }
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected void setMaintenanceMode(boolean enabled, @CheckForNull String reason) {
         if (enabled) {
             try {
                 Jenkins.get().doQuietDown(false, 0, reason, false);
-            } catch (InterruptedException | IOException e) {
-                throw new AssertionError(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Failed to enable maintenance mode", e);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to enable maintenance mode", e);
             }
         } else {
             Jenkins.get().doCancelQuietDown();
